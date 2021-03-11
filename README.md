@@ -28,7 +28,7 @@ Our method achieves a new state-of-the-art on [Charades](http://vuchallenge.org/
 - accimage 0.1.1
 - pkbar 0.5
 
-### Quick start
+### Quick Start
 
 Edit the Dataset directories to fit yours, and,
 
