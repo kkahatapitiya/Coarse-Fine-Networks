@@ -1,0 +1,374 @@
+python train_x3d_charades_loc_withFeatNEWNEW.py -gpu 3,7,6,0,2
+data/charades_traininglabeldata_160.npy exists
+dataset size:7909
+data/charades_testinglabeldata_160.npy exists
+dataset size:1851
+train 7909 val 1851
+Total iterations: 105200 Total epochs: 200
+datasets created
+model loaded
+LR:0.020000
+Adjusting learning rate of group 0 to 2.0000e-02.
+Adjusting learning rate of group 1 to 2.0000e-01.
+Step 0 Epoch 0
+----------
+update:
+train
+263/526  [==============>...............] - 415.7s Epoch:1 train steps: 263 Loc Loss: 0.0675 Cls Loss: 0.1201 Tot Loss: 0.0938 mAP: 0.1136
+526/526  [==============================] - 838.6s
+ Epoch:1 train steps: 526 Loc Loss: 0.0593 Cls Loss: 0.1065 Tot Loss: 0.0829 mAP: 0.1758
+528/526  [==============================] - 891.0supdate:
+train
+261/526  [=============>................] - 389.5s Epoch:2 train steps: 789 Loc Loss: 0.0561 Cls Loss: 0.1008 Tot Loss: 0.0784 mAP: 0.2039
+524/526  [============================>.] - 822.0s Epoch:2 train steps: 1052 Loc Loss: 0.0548 Cls Loss: 0.0987 Tot Loss: 0.0768 mAP: 0.2221
+526/526  [==============================] - 856.7s
+528/526  [==============================] - 858.9supdate:
+val
+370/370  [==============================] - 204.7s
+371/370  [==============================] - 205.3s Epoch:2 val Loc Loss: 0.0895 Cls Loss: 0.1667 Tot Loss: 0.1281 mAP: 0.2055
+Adjusting learning rate of group 0 to 2.0000e-02.
+Adjusting learning rate of group 1 to 2.0000e-01.
+Step 1056 Epoch 2
+----------
+update:
+train
+259/526  [=============>................] - 392.6s Epoch:3 train steps: 1315 Loc Loss: 0.0525 Cls Loss: 0.0947 Tot Loss: 0.0736 mAP: 0.2374
+522/526  [============================>.] - 826.8s Epoch:3 train steps: 1578 Loc Loss: 0.0528 Cls Loss: 0.0949 Tot Loss: 0.0739 mAP: 0.2446
+526/526  [==============================] - 864.4s
+528/526  [==============================] - 867.3supdate:
+train
+257/526  [=============>................] - 394.0s Epoch:4 train steps: 1841 Loc Loss: 0.0514 Cls Loss: 0.0925 Tot Loss: 0.0719 mAP: 0.2530
+520/526  [============================>.] - 813.8s Epoch:4 train steps: 2104 Loc Loss: 0.0508 Cls Loss: 0.0917 Tot Loss: 0.0713 mAP: 0.2554
+526/526  [==============================] - 872.0s
+528/526  [==============================] - 874.3supdate:
+val
+370/370  [==============================] - 198.6s
+371/370  [==============================] - 198.8s Epoch:4 val Loc Loss: 0.0811 Cls Loss: 0.1503 Tot Loss: 0.1157 mAP: 0.2190
+Adjusting learning rate of group 0 to 2.0000e-02.
+Adjusting learning rate of group 1 to 2.0000e-01.
+Step 2112 Epoch 4
+----------
+update:
+train
+255/526  [=============>................] - 387.7s Epoch:5 train steps: 2367 Loc Loss: 0.0485 Cls Loss: 0.0874 Tot Loss: 0.0680 mAP: 0.2718
+518/526  [============================>.] - 788.3s Epoch:5 train steps: 2630 Loc Loss: 0.0510 Cls Loss: 0.0917 Tot Loss: 0.0713 mAP: 0.2699
+526/526  [==============================] - 853.2s
+528/526  [==============================] - 855.5supdate:
+train
+253/526  [=============>................] - 366.9s Epoch:6 train steps: 2893 Loc Loss: 0.0479 Cls Loss: 0.0860 Tot Loss: 0.0669 mAP: 0.2771
+516/526  [============================>.] - 793.8s Epoch:6 train steps: 3156 Loc Loss: 0.0500 Cls Loss: 0.0900 Tot Loss: 0.0700 mAP: 0.2815
+526/526  [==============================] - 857.1s
+528/526  [==============================] - 860.4supdate:
+val
+370/370  [==============================] - 196.4s
+371/370  [==============================] - 197.2s Epoch:6 val Loc Loss: 0.0803 Cls Loss: 0.1489 Tot Loss: 0.1146 mAP: 0.2208
+Adjusting learning rate of group 0 to 2.0000e-02.
+Adjusting learning rate of group 1 to 2.0000e-01.
+Step 3168 Epoch 6
+----------
+update:
+train
+251/526  [=============>................] - 363.9s Epoch:7 train steps: 3419 Loc Loss: 0.0470 Cls Loss: 0.0842 Tot Loss: 0.0656 mAP: 0.2880
+514/526  [============================>.] - 792.4s Epoch:7 train steps: 3682 Loc Loss: 0.0491 Cls Loss: 0.0883 Tot Loss: 0.0687 mAP: 0.2917
+526/526  [==============================] - 841.8s
+528/526  [==============================] - 845.8supdate:
+train
+249/526  [=============>................] - 358.9s Epoch:8 train steps: 3945 Loc Loss: 0.0458 Cls Loss: 0.0822 Tot Loss: 0.0640 mAP: 0.2939
+512/526  [============================>.] - 781.4s Epoch:8 train steps: 4208 Loc Loss: 0.0487 Cls Loss: 0.0874 Tot Loss: 0.0680 mAP: 0.2995
+526/526  [==============================] - 841.0s
+528/526  [==============================] - 843.5supdate:
+val
+370/370  [==============================] - 198.7s
+371/370  [==============================] - 199.0s Epoch:8 val Loc Loss: 0.0840 Cls Loss: 0.1570 Tot Loss: 0.1205 mAP: 0.2272
+Adjusting learning rate of group 0 to 2.0000e-02.
+Adjusting learning rate of group 1 to 2.0000e-01.
+Step 4224 Epoch 8
+----------
+update:
+train
+247/526  [=============>................] - 369.8s Epoch:9 train steps: 4471 Loc Loss: 0.0444 Cls Loss: 0.0796 Tot Loss: 0.0620 mAP: 0.3039
+510/526  [============================>.] - 792.0s Epoch:9 train steps: 4734 Loc Loss: 0.0488 Cls Loss: 0.0873 Tot Loss: 0.0680 mAP: 0.3010
+526/526  [==============================] - 852.3s
+528/526  [==============================] - 855.5supdate:
+train
+245/526  [============>.................] - 369.8s Epoch:10 train steps: 4997 Loc Loss: 0.0441 Cls Loss: 0.0788 Tot Loss: 0.0615 mAP: 0.3083
+508/526  [===========================>..] - 778.1s Epoch:10 train steps: 5260 Loc Loss: 0.0479 Cls Loss: 0.0857 Tot Loss: 0.0668 mAP: 0.3097
+526/526  [==============================] - 843.3s
+528/526  [==============================] - 845.6supdate:
+val
+370/370  [==============================] - 200.1s
+371/370  [==============================] - 200.4s Epoch:10 val Loc Loss: 0.0838 Cls Loss: 0.1561 Tot Loss: 0.1199 mAP: 0.2272
+Adjusting learning rate of group 0 to 2.0000e-02.
+Adjusting learning rate of group 1 to 2.0000e-01.
+Step 5280 Epoch 10
+----------
+update:
+train
+243/526  [============>.................] - 362.1s Epoch:11 train steps: 5523 Loc Loss: 0.0434 Cls Loss: 0.0777 Tot Loss: 0.0605 mAP: 0.3143
+506/526  [===========================>..] - 765.7s Epoch:11 train steps: 5786 Loc Loss: 0.0472 Cls Loss: 0.0841 Tot Loss: 0.0657 mAP: 0.3105
+526/526  [==============================] - 844.4s
+528/526  [==============================] - 846.6supdate:
+train
+241/526  [============>.................] - 356.3s Epoch:12 train steps: 6049 Loc Loss: 0.0432 Cls Loss: 0.0765 Tot Loss: 0.0599 mAP: 0.3172
+504/526  [===========================>..] - 787.3s Epoch:12 train steps: 6312 Loc Loss: 0.0469 Cls Loss: 0.0840 Tot Loss: 0.0654 mAP: 0.3179
+526/526  [==============================] - 871.1s
+528/526  [==============================] - 873.3supdate:
+val
+370/370  [==============================] - 201.8s
+371/370  [==============================] - 202.0s Epoch:12 val Loc Loss: 0.0890 Cls Loss: 0.1656 Tot Loss: 0.1273 mAP: 0.2288
+Adjusting learning rate of group 0 to 2.0000e-02.
+Adjusting learning rate of group 1 to 2.0000e-01.
+Step 6336 Epoch 12
+----------
+update:
+train
+239/526  [============>.................] - 350.4s Epoch:13 train steps: 6575 Loc Loss: 0.0417 Cls Loss: 0.0748 Tot Loss: 0.0583 mAP: 0.3303
+502/526  [===========================>..] - 772.9s Epoch:13 train steps: 6838 Loc Loss: 0.0470 Cls Loss: 0.0831 Tot Loss: 0.0651 mAP: 0.3205
+526/526  [==============================] - 857.1s
+528/526  [==============================] - 859.4supdate:
+train
+237/526  [============>.................] - 338.9s Epoch:14 train steps: 7101 Loc Loss: 0.0412 Cls Loss: 0.0732 Tot Loss: 0.0572 mAP: 0.3255
+500/526  [===========================>..] - 754.3s Epoch:14 train steps: 7364 Loc Loss: 0.0466 Cls Loss: 0.0835 Tot Loss: 0.0651 mAP: 0.3335
+526/526  [==============================] - 831.9s
+528/526  [==============================] - 834.1supdate:
+val
+370/370  [==============================] - 192.0s
+371/370  [==============================] - 192.2s Epoch:14 val Loc Loss: 0.0855 Cls Loss: 0.1576 Tot Loss: 0.1215 mAP: 0.2294
+Adjusting learning rate of group 0 to 2.0000e-02.
+Adjusting learning rate of group 1 to 2.0000e-01.
+Step 7392 Epoch 14
+----------
+update:
+train
+235/526  [============>.................] - 329.5s Epoch:15 train steps: 7627 Loc Loss: 0.0406 Cls Loss: 0.0717 Tot Loss: 0.0561 mAP: 0.3327
+498/526  [===========================>..] - 754.4s Epoch:15 train steps: 7890 Loc Loss: 0.0464 Cls Loss: 0.0823 Tot Loss: 0.0643 mAP: 0.3327
+526/526  [==============================] - 832.2s
+528/526  [==============================] - 834.4supdate:
+train
+233/526  [============>.................] - 352.7s Epoch:16 train steps: 8153 Loc Loss: 0.0401 Cls Loss: 0.0704 Tot Loss: 0.0553 mAP: 0.3411
+496/526  [===========================>..] - 761.4s Epoch:16 train steps: 8416 Loc Loss: 0.0460 Cls Loss: 0.0816 Tot Loss: 0.0638 mAP: 0.3377
+526/526  [==============================] - 841.3s
+528/526  [==============================] - 843.4supdate:
+val
+370/370  [==============================] - 201.8s
+371/370  [==============================] - 202.3s Epoch:16 val Loc Loss: 0.0858 Cls Loss: 0.1606 Tot Loss: 0.1232 mAP: 0.2298
+Adjusting learning rate of group 0 to 2.0000e-02.
+Adjusting learning rate of group 1 to 2.0000e-01.
+Step 8448 Epoch 16
+----------
+update:
+train
+231/526  [============>.................] - 343.7s Epoch:17 train steps: 8679 Loc Loss: 0.0395 Cls Loss: 0.0701 Tot Loss: 0.0548 mAP: 0.3457
+494/526  [===========================>..] - 752.7s Epoch:17 train steps: 8942 Loc Loss: 0.0459 Cls Loss: 0.0805 Tot Loss: 0.0632 mAP: 0.3362
+526/526  [==============================] - 841.4s
+528/526  [==============================] - 843.7supdate:
+train
+229/526  [============>.................] - 346.6s Epoch:18 train steps: 9205 Loc Loss: 0.0388 Cls Loss: 0.0687 Tot Loss: 0.0538 mAP: 0.3541
+492/526  [===========================>..] - 769.9s Epoch:18 train steps: 9468 Loc Loss: 0.0455 Cls Loss: 0.0801 Tot Loss: 0.0628 mAP: 0.3404
+526/526  [==============================] - 868.2s
+528/526  [==============================] - 870.5supdate:
+val
+370/370  [==============================] - 199.2s
+371/370  [==============================] - 199.5s Epoch:18 val Loc Loss: 0.0914 Cls Loss: 0.1717 Tot Loss: 0.1315 mAP: 0.2301
+Adjusting learning rate of group 0 to 2.0000e-02.
+Adjusting learning rate of group 1 to 2.0000e-01.
+Step 9504 Epoch 18
+----------
+update:
+train
+227/526  [===========>..................] - 334.6s Epoch:19 train steps: 9731 Loc Loss: 0.0382 Cls Loss: 0.0679 Tot Loss: 0.0530 mAP: 0.3519
+490/526  [==========================>...] - 763.7s Epoch:19 train steps: 9994 Loc Loss: 0.0453 Cls Loss: 0.0798 Tot Loss: 0.0626 mAP: 0.3476
+526/526  [==============================] - 863.2s
+528/526  [==============================] - 865.3supdate:
+train
+225/526  [===========>..................] - 328.3s Epoch:20 train steps: 10257 Loc Loss: 0.0378 Cls Loss: 0.0667 Tot Loss: 0.0522 mAP: 0.3556
+488/526  [==========================>...] - 750.8s Epoch:20 train steps: 10520 Loc Loss: 0.0448 Cls Loss: 0.0784 Tot Loss: 0.0616 mAP: 0.3565
+526/526  [==============================] - 844.3s
+528/526  [==============================] - 846.8supdate:
+val
+370/370  [==============================] - 199.1s
+371/370  [==============================] - 199.9s Epoch:20 val Loc Loss: 0.0876 Cls Loss: 0.1633 Tot Loss: 0.1255 mAP: 0.2302
+Adjusting learning rate of group 0 to 2.0000e-02.
+Adjusting learning rate of group 1 to 2.0000e-01.
+Step 10560 Epoch 20
+----------
+update:
+train
+223/526  [===========>..................] - 321.0s Epoch:21 train steps: 10783 Loc Loss: 0.0373 Cls Loss: 0.0655 Tot Loss: 0.0514 mAP: 0.3574
+486/526  [==========================>...] - 743.6s Epoch:21 train steps: 11046 Loc Loss: 0.0444 Cls Loss: 0.0777 Tot Loss: 0.0610 mAP: 0.3573
+526/526  [==============================] - 835.1s
+528/526  [==============================] - 838.2supdate:
+train
+221/526  [===========>..................] - 323.9s Epoch:22 train steps: 11309 Loc Loss: 0.0372 Cls Loss: 0.0647 Tot Loss: 0.0509 mAP: 0.3632
+484/526  [==========================>...] - 739.0s Epoch:22 train steps: 11572 Loc Loss: 0.0442 Cls Loss: 0.0774 Tot Loss: 0.0608 mAP: 0.3563
+526/526  [==============================] - 832.9s
+528/526  [==============================] - 835.1supdate:
+val
+370/370  [==============================] - 201.5s
+371/370  [==============================] - 202.0s Epoch:22 val Loc Loss: 0.0876 Cls Loss: 0.1633 Tot Loss: 0.1255 mAP: 0.2324
+Adjusting learning rate of group 0 to 2.0000e-02.
+Adjusting learning rate of group 1 to 2.0000e-01.
+Step 11616 Epoch 22
+----------
+update:
+train
+219/526  [===========>..................] - 329.2s Epoch:23 train steps: 11835 Loc Loss: 0.0365 Cls Loss: 0.0637 Tot Loss: 0.0501 mAP: 0.3694
+482/526  [==========================>...] - 756.2s Epoch:23 train steps: 12098 Loc Loss: 0.0439 Cls Loss: 0.0766 Tot Loss: 0.0602 mAP: 0.3659
+526/526  [==============================] - 853.5s
+528/526  [==============================] - 855.7supdate:
+train
+217/526  [===========>..................] - 329.9s Epoch:24 train steps: 12361 Loc Loss: 0.0355 Cls Loss: 0.0619 Tot Loss: 0.0487 mAP: 0.3691
+480/526  [==========================>...] - 730.7s Epoch:24 train steps: 12624 Loc Loss: 0.0441 Cls Loss: 0.0768 Tot Loss: 0.0605 mAP: 0.3659
+526/526  [==============================] - 845.6s
+528/526  [==============================] - 848.9supdate:
+val
+370/370  [==============================] - 198.5s
+371/370  [==============================] - 198.8s Epoch:24 val Loc Loss: 0.0851 Cls Loss: 0.1581 Tot Loss: 0.1216 mAP: 0.2288
+Adjusting learning rate of group 0 to 2.0000e-02.
+Adjusting learning rate of group 1 to 2.0000e-01.
+Step 12672 Epoch 24
+----------
+update:
+train
+215/526  [===========>..................] - 323.7s Epoch:25 train steps: 12887 Loc Loss: 0.0353 Cls Loss: 0.0609 Tot Loss: 0.0481 mAP: 0.3759
+478/526  [==========================>...] - 736.5s Epoch:25 train steps: 13150 Loc Loss: 0.0433 Cls Loss: 0.0753 Tot Loss: 0.0593 mAP: 0.3786
+526/526  [==============================] - 854.4s
+528/526  [==============================] - 857.7supdate:
+train
+213/526  [===========>..................] - 308.3s Epoch:26 train steps: 13413 Loc Loss: 0.0346 Cls Loss: 0.0598 Tot Loss: 0.0472 mAP: 0.3843
+476/526  [==========================>...] - 732.6s Epoch:26 train steps: 13676 Loc Loss: 0.0435 Cls Loss: 0.0760 Tot Loss: 0.0598 mAP: 0.3694
+526/526  [==============================] - 847.1s
+528/526  [==============================] - 849.3supdate:
+val
+370/370  [==============================] - 198.1s
+371/370  [==============================] - 198.6s Epoch:26 val Loc Loss: 0.0893 Cls Loss: 0.1658 Tot Loss: 0.1275 mAP: 0.2305
+Adjusting learning rate of group 0 to 2.0000e-02.
+Adjusting learning rate of group 1 to 2.0000e-01.
+Step 13728 Epoch 26
+----------
+update:
+train
+211/526  [===========>..................] - 311.8s Epoch:27 train steps: 13939 Loc Loss: 0.0343 Cls Loss: 0.0595 Tot Loss: 0.0469 mAP: 0.3883
+474/526  [==========================>...] - 724.5s Epoch:27 train steps: 14202 Loc Loss: 0.0428 Cls Loss: 0.0744 Tot Loss: 0.0586 mAP: 0.3738
+526/526  [==============================] - 845.7s
+528/526  [==============================] - 848.0supdate:
+train
+209/526  [==========>...................] - 308.4s Epoch:28 train steps: 14465 Loc Loss: 0.0333 Cls Loss: 0.0575 Tot Loss: 0.0454 mAP: 0.3856
+472/526  [=========================>....] - 736.7s Epoch:28 train steps: 14728 Loc Loss: 0.0433 Cls Loss: 0.0745 Tot Loss: 0.0589 mAP: 0.3822
+526/526  [==============================] - 846.3s
+528/526  [==============================] - 848.7supdate:
+val
+370/370  [==============================] - 201.0s
+371/370  [==============================] - 201.5s Epoch:28 val Loc Loss: 0.0907 Cls Loss: 0.1685 Tot Loss: 0.1296 mAP: 0.2316
+Adjusting learning rate of group 0 to 2.0000e-02.
+Adjusting learning rate of group 1 to 2.0000e-01.
+Step 14784 Epoch 28
+----------
+update:
+train
+207/526  [==========>...................] - 305.5s Epoch:29 train steps: 14991 Loc Loss: 0.0332 Cls Loss: 0.0567 Tot Loss: 0.0449 mAP: 0.3924
+470/526  [=========================>....] - 727.1s Epoch:29 train steps: 15254 Loc Loss: 0.0426 Cls Loss: 0.0734 Tot Loss: 0.0580 mAP: 0.3848
+526/526  [==============================] - 837.5s
+528/526  [==============================] - 839.7supdate:
+train
+205/526  [==========>...................] - 316.7s Epoch:30 train steps: 15517 Loc Loss: 0.0328 Cls Loss: 0.0558 Tot Loss: 0.0443 mAP: 0.3907
+468/526  [=========================>....] - 727.1s Epoch:30 train steps: 15780 Loc Loss: 0.0422 Cls Loss: 0.0729 Tot Loss: 0.0576 mAP: 0.3975
+526/526  [==============================] - 857.6s
+528/526  [==============================] - 859.8supdate:
+val
+370/370  [==============================] - 203.1s
+371/370  [==============================] - 203.4s Epoch:30 val Loc Loss: 0.0867 Cls Loss: 0.1617 Tot Loss: 0.1242 mAP: 0.2300
+Adjusting learning rate of group 0 to 2.0000e-03.
+Adjusting learning rate of group 1 to 2.0000e-02.
+Step 15840 Epoch 30
+----------
+update:
+train
+203/526  [==========>...................] - 306.8s Epoch:31 train steps: 16043 Loc Loss: 0.0315 Cls Loss: 0.0538 Tot Loss: 0.0427 mAP: 0.4111
+466/526  [=========================>....] - 714.9s Epoch:31 train steps: 16306 Loc Loss: 0.0410 Cls Loss: 0.0696 Tot Loss: 0.0553 mAP: 0.4123
+526/526  [==============================] - 856.8s
+528/526  [==============================] - 859.5supdate:
+train
+201/526  [==========>...................] - 296.3s Epoch:32 train steps: 16569 Loc Loss: 0.0313 Cls Loss: 0.0529 Tot Loss: 0.0421 mAP: 0.4194
+464/526  [=========================>....] - 725.4s Epoch:32 train steps: 16832 Loc Loss: 0.0403 Cls Loss: 0.0690 Tot Loss: 0.0546 mAP: 0.4246
+526/526  [==============================] - 859.0s
+528/526  [==============================] - 862.1supdate:
+val
+370/370  [==============================] - 205.2s
+371/370  [==============================] - 205.7s Epoch:32 val Loc Loss: 0.0886 Cls Loss: 0.1641 Tot Loss: 0.1263 mAP: 0.2314
+Adjusting learning rate of group 0 to 2.0000e-03.
+Adjusting learning rate of group 1 to 2.0000e-02.
+Step 16896 Epoch 32
+----------
+update:
+train
+199/526  [==========>...................] - 289.3s Epoch:33 train steps: 17095 Loc Loss: 0.0303 Cls Loss: 0.0511 Tot Loss: 0.0407 mAP: 0.4256
+462/526  [=========================>....] - 719.0s Epoch:33 train steps: 17358 Loc Loss: 0.0407 Cls Loss: 0.0694 Tot Loss: 0.0551 mAP: 0.4210
+526/526  [==============================] - 851.3s
+528/526  [==============================] - 853.5supdate:
+train
+197/526  [==========>...................] - 289.6s Epoch:34 train steps: 17621 Loc Loss: 0.0300 Cls Loss: 0.0508 Tot Loss: 0.0404 mAP: 0.4180
+460/526  [=========================>....] - 707.1s Epoch:34 train steps: 17884 Loc Loss: 0.0408 Cls Loss: 0.0685 Tot Loss: 0.0547 mAP: 0.4282
+526/526  [==============================] - 852.9s
+528/526  [==============================] - 855.2supdate:
+val
+370/370  [==============================] - 198.6s
+371/370  [==============================] - 199.0s Epoch:34 val Loc Loss: 0.0878 Cls Loss: 0.1632 Tot Loss: 0.1255 mAP: 0.2314
+Adjusting learning rate of group 0 to 2.0000e-03.
+Adjusting learning rate of group 1 to 2.0000e-02.
+Step 17952 Epoch 34
+----------
+update:
+train
+195/526  [==========>...................] - 288.9s Epoch:35 train steps: 18147 Loc Loss: 0.0299 Cls Loss: 0.0508 Tot Loss: 0.0404 mAP: 0.4206
+458/526  [=========================>....] - 708.7s Epoch:35 train steps: 18410 Loc Loss: 0.0406 Cls Loss: 0.0687 Tot Loss: 0.0547 mAP: 0.4256
+526/526  [==============================] - 849.0s
+528/526  [==============================] - 853.1supdate:
+train
+193/526  [==========>...................] - 285.3s Epoch:36 train steps: 18673 Loc Loss: 0.0297 Cls Loss: 0.0504 Tot Loss: 0.0400 mAP: 0.4232
+456/526  [=========================>....] - 698.8s Epoch:36 train steps: 18936 Loc Loss: 0.0400 Cls Loss: 0.0674 Tot Loss: 0.0537 mAP: 0.4294
+526/526  [==============================] - 835.7s
+528/526  [==============================] - 838.8supdate:
+val
+370/370  [==============================] - 197.5s
+371/370  [==============================] - 197.8s Epoch:36 val Loc Loss: 0.0885 Cls Loss: 0.1647 Tot Loss: 0.1266 mAP: 0.2320
+Adjusting learning rate of group 0 to 2.0000e-03.
+Adjusting learning rate of group 1 to 2.0000e-02.
+Step 19008 Epoch 36
+----------
+update:
+train
+191/526  [=========>....................] - 294.0s Epoch:37 train steps: 19199 Loc Loss: 0.0290 Cls Loss: 0.0489 Tot Loss: 0.0389 mAP: 0.4207
+454/526  [========================>.....] - 709.1s Epoch:37 train steps: 19462 Loc Loss: 0.0404 Cls Loss: 0.0682 Tot Loss: 0.0543 mAP: 0.4305
+526/526  [==============================] - 851.8s
+528/526  [==============================] - 854.1supdate:
+train
+189/526  [=========>....................] - 285.2s Epoch:38 train steps: 19725 Loc Loss: 0.0286 Cls Loss: 0.0486 Tot Loss: 0.0386 mAP: 0.4266
+452/526  [========================>.....] - 705.3s Epoch:38 train steps: 19988 Loc Loss: 0.0406 Cls Loss: 0.0685 Tot Loss: 0.0545 mAP: 0.4249
+526/526  [==============================] - 851.9s
+528/526  [==============================] - 854.0supdate:
+val
+370/370  [==============================] - 199.0s
+371/370  [==============================] - 199.5s Epoch:38 val Loc Loss: 0.0891 Cls Loss: 0.1653 Tot Loss: 0.1272 mAP: 0.2310
+Adjusting learning rate of group 0 to 2.0000e-03.
+Adjusting learning rate of group 1 to 2.0000e-02.
+Step 20064 Epoch 38
+----------
+update:
+train
+187/526  [=========>....................] - 280.5s Epoch:39 train steps: 20251 Loc Loss: 0.0286 Cls Loss: 0.0481 Tot Loss: 0.0384 mAP: 0.4217
+450/526  [========================>.....] - 701.6s Epoch:39 train steps: 20514 Loc Loss: 0.0400 Cls Loss: 0.0674 Tot Loss: 0.0537 mAP: 0.4325
+526/526  [==============================] - 851.6s
+528/526  [==============================] - 853.9supdate:
+train
+185/526  [=========>....................] - 272.9s Epoch:40 train steps: 20777 Loc Loss: 0.0279 Cls Loss: 0.0469 Tot Loss: 0.0374 mAP: 0.4230
+448/526  [========================>.....] - 699.8s Epoch:40 train steps: 21040 Loc Loss: 0.0404 Cls Loss: 0.0681 Tot Loss: 0.0542 mAP: 0.4246
+526/526  [==============================] - 860.1s
+528/526  [==============================] - 862.3supdate:
+val
+370/370  [==============================] - 198.6s
+371/370  [==============================] - 198.9s Epoch:40 val Loc Loss: 0.0879 Cls Loss: 0.1623 Tot Loss: 0.1251 mAP: 0.2308
+Adjusting learning rate of group 0 to 2.0000e-03.
+Adjusting learning rate of group 1 to 2.0000e-02.
+Step 21120 Epoch 40
+----------
