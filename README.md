@@ -38,6 +38,8 @@ Edit the Dataset directories to fit yours, and,
 
 Please note that we pre-extract the fine features, and use them to train the complete Coarse-Fine Network to reduce the burden on GPUs. One can train the two streams together to achieve a better performance given enough available compute. Our pre-trained models and training logs are available. Our final reported numbers on Charades are for the `Charades_v1_localize` evaluation setting as done in all the previous work. Here, predictions are made for 25 uniformly sampled frames per video instead of densely predicting for every frame. Use [this](http://vuchallenge.org/vu17_charades.zip) evaluation script to reproduce our reported numbers.
 
+**Check out our implementation [X3D-Multigrid](https://github.com/kkahatapitiya/X3D-Multigrid) to understand more about the backbone X3D architecture and its efficient training strategy Multigrid.**
+
 ### Reference
 
 If you find this useful, please consider citing our work:
