@@ -10,13 +10,15 @@ In this work, we introduce **Coarse-Fine Networks**, a two-stream architecture w
 
 <img src="./figs/contrib.png" width="800">
 
-The proposed **Grid Pool** operation learns to sample important temporal locations, creating a more meaningful coarse representation in contrast to  conventional temporal downsampling/pooling. The idea is to predict confidence scores for temporal regions at a given (output) temporal resolution, and sample based on these scores, i.e., sampling at a higher rate (or lower sampling duration) in the regions with high confidence. We use a CDF based sampling strategy, which is similar to inverse transform sampling [(here)](https://en.wikipedia.org/wiki/Inverse_transform_sampling). Our sampling is in fact a trilinear interpolation, which makes the whole process differentiable and end-to-end trainable in turn. This is paired with a **Grid Unpool** operation, which inverts this opration for accurate temporal localization in frame-wise prediction tasks such as activity detection.
+The proposed **Grid Pool** operation learns to sample important temporal locations, creating a more meaningful coarse representation in contrast to  conventional temporal downsampling/pooling. The idea is to predict confidence scores for temporal regions at a given (output) temporal resolution, and sample based on these scores, i.e., sampling at a higher rate (or a lower sampling duration) in the regions with high confidence. We use a CDF based sampling strategy, which is similar to inverse transform sampling [(here)](https://en.wikipedia.org/wiki/Inverse_transform_sampling). Our sampling is in fact a trilinear interpolation, which makes the whole process differentiable and end-to-end trainable in turn. This is paired with a **Grid Unpool** operation, which inverts the pooling opration for accurate temporal localization in frame-wise prediction tasks such as activity detection.
 
 Our **Multi-stage Fusion** consists of three stages: (1) filtering the fine features, (2) temporally aligning the two streams and (3) fusing multiple abstractions. We use a self-attention mask to filter which fine information should be passed through to the Coarse stream. Our two streams benefit from looking at different temporal ranges (generally the Fine stream has more range). To better fuse these representations, we need to align them temporally. We use a set of Gaussians (defined by scale and location hyperparameters) centered at coarse frame locations to aggregate fine features, weighted based on relative temporal locations. Such aligned fine features coming from multiple absrtaction levels (depths) get concatenated to predict scale and shift features for the Coarse stream.
 
 ### Results
 
 <img src="./figs/complexity.png" width="800">
+
+Our method achieves a new state-of-the-art on [Charades](http://vuchallenge.org/charades.html) dataset and shows competitive results on [Multi-THUMOS](http://crcv.ucf.edu/THUMOS14/download.html) dataset. This comes at a significant improvement in efficiency (more than one order of magnitude) and without any additional input modalities such as optical flow or object detections, in contrast to previous state-of-the-art methods.
 
 ### Dependencies
 
@@ -27,6 +29,14 @@ Our **Multi-stage Fusion** consists of three stages: (1) filtering the fine feat
 - pkbar 0.5
 
 ### Quick start
+
+Edit the Dataset directories to fit yours, and,
+
+- Use `python train_fine.py -gpu {gpu_num}` for training the Fine stream.
+- Use `python extract_fineFEAT.py -gpu {gpu_num}` for extracting pre-trained features from Fine stream.
+- Use `python train_coarse_fineFEAT.py -gpu 0,1` for training the complete Coarse-Fine Network.
+
+Please note that we pre-extract the fine features, and use them to train the complete Coarse-Fine Network to reduce the burden on GPUs. One can train the two streams together to achieve a better performance given enough available compute. Our pre-trained models and training logs are available. Our final reported numbers on Charades are for the `Charades_v1_localize` evaluation setting as done in all the previous work. Here, predictions are made for 25 uniformly sampled frames per video instead of densely predicting for every frame. Use [this](http://vuchallenge.org/vu17_charades.zip) evaluation script to reproduce our reported numbers.
 
 ### Reference
 
