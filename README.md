@@ -1,6 +1,6 @@
 # Coarse-Fine Networks for Temporal Activity Detection in Videos
 
-This repository contains the official PyTorch implementation for our CVPR2021 paper titled "Coarse-Fine Networks for Temporal Activity Detection in Videos".
+This repository contains the official PyTorch implementation for our CVPR2021 paper titled "[Coarse-Fine Networks for Temporal Activity Detection in Videos](https://arxiv.org/abs/2103.01302)".
 
 ### Introduction
 
