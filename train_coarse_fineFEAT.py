@@ -19,7 +19,7 @@ from torch.autograd import Variable
 
 import torchvision
 from torchvision import datasets, transforms
-import videotransforms
+#import videotransforms
 from torchsummary import summary
 
 import numpy as np
