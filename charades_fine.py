@@ -159,7 +159,7 @@ class Charades(data_utl.Dataset):
         if self.split == 'testing' and self.task == 'loc':
             stride_f = stride_f//self.crops
 
-        imgs, feat = load_rgb_frames(self.root, vid, start_f, frames, stride_f, self.loader) #stride_f
+        imgs = load_rgb_frames(self.root, vid, start_f, frames, stride_f, self.loader) #stride_f
 
 
         label = label[:, start_f-1:start_f-1+frames:1] #stride_f
@@ -192,7 +192,7 @@ class Charades(data_utl.Dataset):
         meta = torch.from_numpy(np.array([start_f//self.gamma_tau, frames//self.gamma_tau,
                                             nf//self.gamma_tau, stride_f//self.gamma_tau]))
 
-        return clips, label, meta, vid
+        return clips, label, vid
 
     def __len__(self):
         return len(self.data)
@@ -210,7 +210,6 @@ def mt_collate_fn(batch):
             max_len_labels = b[1].shape[1]
 
     new_batch = []
-    keys = list(batch[0][2].keys())
     for b in batch:
         clips = np.zeros((b[0].shape[0], b[0].shape[1], max_len_clips, b[0].shape[3], b[0].shape[4]), np.float32)
         label = np.zeros((b[1].shape[0], max_len_labels), np.float32)
@@ -220,6 +219,6 @@ def mt_collate_fn(batch):
         label[:,:b[1].shape[1]] = b[1] #[:,:min(cap_label,b[1].shape[1])]
         mask[:b[1].shape[1]] = 1
 
-        new_batch.append([torch.from_numpy(clips), torch.from_numpy(label), torch.from_numpy(mask), b[2], b[3]])
+        new_batch.append([torch.from_numpy(clips), torch.from_numpy(label), torch.from_numpy(mask), b[2]])
 
     return default_collate(new_batch)
