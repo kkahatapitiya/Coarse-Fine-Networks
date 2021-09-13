@@ -49,7 +49,7 @@ CHARADES_MEAN = [0.413, 0.368, 0.338]
 CHARADES_STD = [0.131, 0.125, 0.132] # CALCULATED ON CHARADES TRAINING SET FOR FRAME-WISE MEANS
 CHARADES_TR_SIZE = 7900
 CHARADES_VAL_SIZE = 1850
-CHARADES_ROOT = '/data/add_disk0/kumarak/Charades_v1_rgb'
+CHARADES_ROOT = '/home/kumara/data/Charades_v1_rgb' #'/data/add_disk0/kumarak/Charades_v1_rgb'
 CHARADES_ANNO = 'data/charades.json'
 
 
@@ -101,19 +101,19 @@ def run(init_lr=INIT_LR, warmup_steps=0, max_epochs=200, mode='rgb', root= CHARA
 
     fine_net = x3d_fine.generate_model(x3d_version=X3D_VERSION, n_classes=400, n_input_channels=3,
                                     task='loc', dropout=0.5, base_bn_splits=1, t_downsample=False, extract_feat=False)
-    '''load_ckpt = torch.load('models/x3d_multigrid_kinetics_fb_pretrained.pt')
+    load_ckpt = torch.load('models/x3d_multigrid_kinetics_fb_pretrained.pt')
     state = fine_net.state_dict()
     state.update(load_ckpt['model_state_dict'])
-    fine_net.load_state_dict(state)'''
+    fine_net.load_state_dict(state)
 
     save_model = 'models/fine_charades_'
 
     fine_net.replace_logits(157)
 
-    load_ckpt = torch.load('models/fine_charades_039000_SAVE.pt')
+    '''load_ckpt = torch.load('models/fine_charades_039000_SAVE.pt')
     state = fine_net.state_dict()
     state.update(load_ckpt['model_state_dict'])
-    fine_net.load_state_dict(state)
+    fine_net.load_state_dict(state)'''
 
     if steps>0:
         load_ckpt = torch.load('models/fine_charades_'+str(load_steps).zfill(6)+'.pt')

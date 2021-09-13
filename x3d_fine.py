@@ -114,10 +114,13 @@ class Bottleneck(nn.Module):
         self.base_bn_splits = base_bn_splits
         self.conv1 = conv1x1x1(in_planes, planes[0])
         self.bn1 = SubBatchNorm3d(num_splits=self.base_bn_splits, num_features=planes[0], affine=True) #nn.BatchNorm3d(planes[0])
+        #self.bn1 = nn.SyncBatchNorm(planes[0])
         self.conv2 = conv3x3x3(planes[0], planes[0], stride, t_downsample=t_downsample)
         self.bn2 = SubBatchNorm3d(num_splits=self.base_bn_splits, num_features=planes[0], affine=True) #nn.BatchNorm3d(planes[0])
+        #self.bn2 = nn.SyncBatchNorm(planes[0])
         self.conv3 = conv1x1x1(planes[0], planes[1], t_downsample=t_downsample)
         self.bn3 = SubBatchNorm3d(num_splits=self.base_bn_splits, num_features=planes[1], affine=True) #nn.BatchNorm3d(planes[1])
+        #self.bn3 = nn.SyncBatchNorm(planes[1])
         self.swish = Swish() #nn.Hardswish()
         self.relu = nn.ReLU(inplace=True)
         if self.index % 2 == 0:
@@ -221,6 +224,7 @@ class ResNet(nn.Module):
                                bias=False,
                                groups=self.in_planes)
         self.bn1 = SubBatchNorm3d(num_splits=self.base_bn_splits, num_features=self.in_planes, affine=True) #nn.BatchNorm3d(self.in_planes)
+        #self.bn1 = nn.SyncBatchNorm(self.in_planes)
         self.relu = nn.ReLU(inplace=True)
         self.layer1 = self._make_layer(block,
                                        block_inplanes[0],
@@ -249,6 +253,7 @@ class ResNet(nn.Module):
                                padding=(0, 0, 0),
                                bias=False)
         self.bn5 = SubBatchNorm3d(num_splits=self.base_bn_splits, num_features=block_inplanes[3][0], affine=True) #nn.BatchNorm3d(block_inplanes[3][0])
+        #self.bn5 = nn.SyncBatchNorm(block_inplanes[3][0])
         if task == 'class':
             self.avgpool = nn.AdaptiveAvgPool3d((1, 1, 1))
         elif task == 'loc':
@@ -285,6 +290,7 @@ class ResNet(nn.Module):
                 downsample = nn.Sequential(
                     conv1x1x1(self.in_planes, planes[1], stride, t_downsample=self.t_downsample),
                     SubBatchNorm3d(num_splits=self.base_bn_splits, num_features=planes[1], affine=True) #nn.BatchNorm3d(planes[1])
+                    #nn.SyncBatchNorm(planes[1])
                     )
 
         layers = []

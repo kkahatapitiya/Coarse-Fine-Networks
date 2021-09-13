@@ -125,7 +125,7 @@ def make_dataset(split_file, split, root, num_classes=157):
 
 class Charades(data_utl.Dataset):
 
-    def __init__(self, split_file, split, root, spatial_transform=None, task='class', frames=80, gamma_tau=5, crops=1):
+    def __init__(self, split_file, split, root, spatial_transform=None, task='class', frames=80, gamma_tau=5, crops=1, extract_feat=False):
 
         self.data = make_dataset(split_file, split, root)
         self.split_file = split_file
@@ -135,7 +135,7 @@ class Charades(data_utl.Dataset):
         self.loader = get_default_video_loader()
         self.spatial_transform = spatial_transform
         self.crops = crops
-        self.split = split
+        self.split = 'testing' if extract_feat else split
         self.task = task
 
     def __getitem__(self, index):

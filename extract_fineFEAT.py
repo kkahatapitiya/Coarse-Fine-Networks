@@ -45,11 +45,15 @@ CHARADES_MEAN = [0.413, 0.368, 0.338]
 CHARADES_STD = [0.131, 0.125, 0.132]
 CHARADES_TR_SIZE = 7900
 CHARADES_VAL_SIZE = 1850
-CHARADES_ROOT = '/data/add_disk0/kumarak/Charades_v1_rgb'
+CHARADES_ROOT = '/home/kumara/data/Charades_v1_rgb' #'/data/add_disk0/kumarak/Charades_v1_rgb'
 CHARADES_ANNO = 'data/charades.json'
-FINE_SAVE_DIR = '/nfs/bigcornea/add_disk0/kumarak/fine_spatial7x7'
+FINE_SAVE_DIR = '/hddd/kumara/x3d_feat/cutmix' #mixup, bg, cutmix #'/nfs/bigcornea/add_disk0/kumarak/fine_spatial7x7'
 # pre-extract fine features and save here, to reduce compute req
 # MAKE DIRS FINE_SAVE_DIR/['layer1', 'layer2', 'layer3', 'layer4', 'conv5']
+feat_keys = ['layer1', 'layer2', 'layer3', 'layer4', 'conv5']
+for k in feat_keys:
+    if not os.path.exists(os.path.join(FINE_SAVE_DIR,k)):
+        os.makedirs(os.path.join(FINE_SAVE_DIR,k))
 
 
 # 0.00125 * BS_UPSCALE --> 80 epochs warmup 2000
@@ -73,14 +77,14 @@ def run(init_lr=INIT_LR, warmup_steps=0, max_epochs=100, root=CHARADES_ROOT,
                                         ToTensor(255),
                                         Normalize(CHARADES_MEAN, CHARADES_STD)])
 
-    # SET 'TESTING' FOR BOTH, TO EXTRACT
-    dataset = Charades(train_split, 'testing', root, train_spatial_transforms,
-                                task='loc', frames=frames, gamma_tau=gamma_tau, crops=1)
-    dataloader = torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=True,
+
+    dataset = Charades(train_split, 'training', root, val_spatial_transforms,
+                                task='loc', frames=frames, gamma_tau=gamma_tau, crops=1, extract_feat=True)
+    dataloader = torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=False,
                                 num_workers=8, pin_memory=True, collate_fn=collate_fn)
 
     val_dataset = Charades(train_split, 'testing', root, val_spatial_transforms,
-                                task='loc', frames=frames, gamma_tau=gamma_tau, crops=1)
+                                task='loc', frames=frames, gamma_tau=gamma_tau, crops=1, extract_feat=True)
     val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size, shuffle=False,
                                 num_workers=8, pin_memory=True, collate_fn=collate_fn)
 
@@ -96,7 +100,10 @@ def run(init_lr=INIT_LR, warmup_steps=0, max_epochs=100, root=CHARADES_ROOT,
 
     fine_net.replace_logits(157)
 
-    load_ckpt = torch.load('models/fine_charades_039000_SAVE.pt')
+    #load_ckpt = torch.load('models/fine_charades_039000_SAVE.pt')
+    load_ckpt = torch.load('models/x3d_charades_loc_rgb_sgd_cutmixV2_3_adaptive_049000.pt')
+    #load_ckpt = torch.load('models/x3d_charades_loc_rgb_sgd_bgfreezing_049000.pt')
+    #load_ckpt = torch.load('models/x3d_charades_loc_rgb_sgd_mixup_adaptive_039000.pt')
     state = fine_net.state_dict()
     state.update(load_ckpt['model_state_dict'])
     fine_net.load_state_dict(state)
@@ -151,7 +158,7 @@ def run(init_lr=INIT_LR, warmup_steps=0, max_epochs=100, root=CHARADES_ROOT,
                 num_iter += 1
                 bar.update(i)
 
-                inputs, labels, masks, meta, name = data
+                inputs, labels, masks, name = data
                 b,n,c,t,h,w = inputs.shape
                 inputs = inputs.view(b*n,c,t,h,w)
 
