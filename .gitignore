@@ -1,0 +1,4 @@
+data/*.npy
+models/*charades*0.pt
+log*
+__pycache__

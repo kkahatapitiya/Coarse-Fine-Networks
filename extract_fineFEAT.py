@@ -45,9 +45,9 @@ CHARADES_MEAN = [0.413, 0.368, 0.338]
 CHARADES_STD = [0.131, 0.125, 0.132]
 CHARADES_TR_SIZE = 7900
 CHARADES_VAL_SIZE = 1850
-CHARADES_ROOT = '/home/kumara/data/Charades_v1_rgb' #'/data/add_disk0/kumarak/Charades_v1_rgb'
+CHARADES_ROOT = '/home/kkahatapitiy/data/Charades_v1_rgb' #'/data/add_disk0/kumarak/Charades_v1_rgb'
 CHARADES_ANNO = 'data/charades.json'
-FINE_SAVE_DIR = '/hddd/kumara/x3d_feat/cutmix' #mixup, bg, cutmix #'/nfs/bigcornea/add_disk0/kumarak/fine_spatial7x7'
+FINE_SAVE_DIR = '/home/kkahatapitiy/data/x3d_feat/cm2' #originalDGX original mu, bg, cm #'/nfs/bigcornea/add_disk0/kumarak/fine_spatial7x7'
 # pre-extract fine features and save here, to reduce compute req
 # MAKE DIRS FINE_SAVE_DIR/['layer1', 'layer2', 'layer3', 'layer4', 'conv5']
 feat_keys = ['layer1', 'layer2', 'layer3', 'layer4', 'conv5']
@@ -61,7 +61,7 @@ def run(init_lr=INIT_LR, warmup_steps=0, max_epochs=100, root=CHARADES_ROOT,
     train_split=CHARADES_ANNO, batch_size=BS*BS_UPSCALE, frames=80, save_dir= FINE_SAVE_DIR):
 
     crop_size = {'S':160, 'M':224, 'XL':312}[X3D_VERSION]
-    resize_size = {'S':[180.,225.], 'M':[256.,256.], 'XL':[360.,450.]}[X3D_VERSION] #[256.,320.]
+    resize_size = {'S':[180.,225.], 'M':[256.,256.], 'XL':[360.,450.]}[X3D_VERSION] #[224.,224.] [256.,320.]
     gamma_tau = {'S':6, 'M':5*1, 'XL':5}[X3D_VERSION] # 5
 
     load_steps = st_steps = steps = 0
@@ -96,17 +96,26 @@ def run(init_lr=INIT_LR, warmup_steps=0, max_epochs=100, root=CHARADES_ROOT,
     print('datasets created')
 
     fine_net = x3d_fine.generate_model(x3d_version=X3D_VERSION, n_classes=400, n_input_channels=3, task='loc',
-                                    dropout=0.5, base_bn_splits=1, global_tower=True)
+                                    dropout=0., base_bn_splits=1, global_tower=True)
 
     fine_net.replace_logits(157)
 
-    #load_ckpt = torch.load('models/fine_charades_039000_SAVE.pt')
-    load_ckpt = torch.load('models/x3d_charades_loc_rgb_sgd_cutmixV2_3_adaptive_049000.pt')
+
+    #load_ckpt = torch.load('models/x3d_charades_loc_rgb_sgd_cutmixV2_3_adaptive_049000.pt')
     #load_ckpt = torch.load('models/x3d_charades_loc_rgb_sgd_bgfreezing_049000.pt')
     #load_ckpt = torch.load('models/x3d_charades_loc_rgb_sgd_mixup_adaptive_039000.pt')
-    state = fine_net.state_dict()
+
+    #load_ckpt = torch.load('models/fine_charades_039000_SAVE.pt')
+    #load_ckpt = torch.load('models/x3d_charades_loc_rgb_sgd_bg_049000_DGX.pt')
+    load_ckpt = torch.load('models/x3d_charades_loc_rgb_sgd_cm_047000_DGX.pt')
+    #load_ckpt = torch.load('models/x3d_charades_loc_rgb_sgd_mu_049000_DGX.pt')
+    #load_ckpt = torch.load('models/x3d_charades_loc_rgb_sgd_original_049000_DGX.pt')
+
+    '''state = fine_net.state_dict()
     state.update(load_ckpt['model_state_dict'])
-    fine_net.load_state_dict(state)
+    fine_net.load_state_dict(state)'''
+
+    fine_net.load_state_dict(load_ckpt['model_state_dict'])
 
     fine_net.cuda()
     fine_net = nn.DataParallel(fine_net)

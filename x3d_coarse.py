@@ -111,10 +111,13 @@ class Bottleneck(nn.Module):
         self.base_bn_splits = base_bn_splits
         self.conv1 = conv1x1x1(in_planes, planes[0])
         self.bn1 = SubBatchNorm3d(num_splits=self.base_bn_splits, num_features=planes[0], affine=True) #nn.BatchNorm3d(planes[0])
+        #self.bn1 = nn.SyncBatchNorm(planes[0])
         self.conv2 = conv3x3x3(planes[0], planes[0], stride)
         self.bn2 = SubBatchNorm3d(num_splits=self.base_bn_splits, num_features=planes[0], affine=True) #nn.BatchNorm3d(planes[0])
+        #self.bn2 = nn.SyncBatchNorm(planes[0])
         self.conv3 = conv1x1x1(planes[0], planes[1])
         self.bn3 = SubBatchNorm3d(num_splits=self.base_bn_splits, num_features=planes[1], affine=True) #nn.BatchNorm3d(planes[1])
+        #self.bn3 = nn.SyncBatchNorm(planes[1])
         self.swish = Swish() #nn.Hardswish()
         self.relu = nn.ReLU(inplace=True)
         if self.index % 2 == 0:
@@ -361,8 +364,10 @@ class GridPoolLayer(nn.Module):
 
         self.conv1 = nn.Conv3d(depth, depth, kernel_size=(3,3,3), stride=(self.ratio//2,2,2), padding=1) # ratio//2
         self.bn1 = SubBatchNorm3d(num_splits=1, num_features=depth, affine=True)
+        #self.bn1 = nn.SyncBatchNorm(depth)
         self.conv2 = nn.Conv3d(depth, depth, kernel_size=(3,3,3), stride=(self.ratio//2,2,2), padding=1) # ratio//2
         self.bn2 = SubBatchNorm3d(num_splits=1, num_features=depth, affine=True)
+        #self.bn2 = nn.SyncBatchNorm(depth)
         self.conv3 = nn.Conv3d(depth, 1, kernel_size=(1,3,3), stride=(1,2,2), padding=(0,1,1))
         #self.conv3 = nn.Conv3d(depth, 1, kernel_size=(3,3,3), stride=(ratio//4,2,2), padding=(1,1,1)) #(1,3,3), (1,2,2)
         self.relu = nn.ReLU(inplace=True)
@@ -507,6 +512,7 @@ class ResNet(nn.Module):
                                bias=False,
                                groups=self.in_planes)
         self.bn1 = SubBatchNorm3d(num_splits=self.base_bn_splits, num_features=self.in_planes, affine=True) #nn.BatchNorm3d(self.in_planes)
+        #self.bn1 = nn.SyncBatchNorm(self.in_planes)
         self.relu = nn.ReLU(inplace=True)
         self.layer1 = self._make_layer(block,
                                        block_inplanes[0],
@@ -530,7 +536,7 @@ class ResNet(nn.Module):
                                        stride=2)
         self.conv5 = nn.Conv3d(block_inplanes[3][1],block_inplanes[3][0],kernel_size=(1, 1, 1),stride=(1, 1, 1),padding=(0, 0, 0),bias=False)
         self.bn5 = SubBatchNorm3d(num_splits=self.base_bn_splits, num_features=block_inplanes[3][0], affine=True) #nn.BatchNorm3d(block_inplanes[3][0])
-
+        #self.bn5 = nn.SyncBatchNorm(block_inplanes[3][0])
 
         self.rw2 = RewightLayer(channels=block_inplanes[0][1], g_channels=block_inplanes[0][1], depth=self.feat_depth['layer1'], height=56)
         self.rw3 = RewightLayer(channels=block_inplanes[1][1], g_channels=block_inplanes[1][1], depth=self.feat_depth['layer2'], height=28)
@@ -544,7 +550,7 @@ class ResNet(nn.Module):
             self.mix4 = MixingLayer(depth=block_inplanes[2][1], learned=self.learnedMixing, index=2)
             self.mix5 = MixingLayer(depth=block_inplanes[3][1], learned=self.learnedMixing, index=3)
 
-        self.gauss = Gaussian(ratio=1) ####### 4 FOR GRIDPOOL
+        self.gauss = Gaussian(ratio=1) ####### 4 FOR GRIDPOOL- nope
 
         if task == 'class':
             self.avgpool = nn.AdaptiveAvgPool3d((1, 1, 1))
@@ -582,6 +588,7 @@ class ResNet(nn.Module):
                 downsample = nn.Sequential(
                     conv1x1x1(self.in_planes, planes[1], stride),
                     SubBatchNorm3d(num_splits=self.base_bn_splits, num_features=planes[1], affine=True) #nn.BatchNorm3d(planes[1])
+                    #nn.SyncBatchNorm(planes[1])
                     )
 
         layers = []
@@ -603,8 +610,8 @@ class ResNet(nn.Module):
 
 
     def replace_logits(self, n_classes):
-        self.fc2 = nn.Linear(2048, n_classes)
-        self.rw6 = RewightLayer(channels=n_classes, g_channels=n_classes, depth=self.feat_depth['conv5'], height=7, pool=True)
+        self.fc2 = nn.Linear(2048, n_classes).cuda()
+        self.rw6 = RewightLayer(channels=n_classes, g_channels=n_classes, depth=self.feat_depth['conv5'], height=7, pool=True).cuda()
 
 
     def update_bn_splits_long_cycle(self, long_cycle_bn_scale):

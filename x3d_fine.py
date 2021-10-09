@@ -313,7 +313,7 @@ class ResNet(nn.Module):
 
 
     def replace_logits(self, n_classes):
-        self.fc2 = nn.Linear(2048, n_classes)
+        self.fc2 = nn.Linear(2048, n_classes).cuda()
 
 
     def update_bn_splits_long_cycle(self, long_cycle_bn_scale):
@@ -365,8 +365,8 @@ class ResNet(nn.Module):
         if self.global_tower:
             feat_g['conv5'] = F.adaptive_avg_pool3d(x, (None, 7, 7))
 
-        if self.global_tower:
-            return feat_g, masks
+        #if self.global_tower:
+        #    return feat_g, masks
 
 
         x = self.avgpool(x)
@@ -385,11 +385,14 @@ class ResNet(nn.Module):
             x = self.dropout(x)
             x = self.fc2(x).permute(0,2,1) # B C T
 
+        if self.global_tower:
+            return feat_g, masks
+
         return x
 
 
 def replace_logits(self, n_classes):
-        self.fc2 = nn.Linear(2048, n_classes)
+        self.fc2 = nn.Linear(2048, n_classes).cuda()
 
 def get_inplanes(version):
     planes = {'S':[(54,24), (108,48), (216,96), (432,192)],

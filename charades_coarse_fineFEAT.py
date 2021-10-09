@@ -109,7 +109,7 @@ def make_dataset(split_file, split, root, num_classes=157):
                 continue
             num_frames = len(os.listdir(os.path.join(root, vid)))
 
-            if num_frames < (2*80+2):
+            if num_frames < 10+2:#(2*80+2):
                 continue
 
             label = np.zeros((num_classes,num_frames), np.float32)

@@ -25,6 +25,7 @@ from torchsummary import summary
 import numpy as np
 import pkbar
 from apmeter import APMeter
+from collections import Counter
 
 import x3d_coarse
 
@@ -42,17 +43,17 @@ warnings.filterwarnings("ignore")
 torch.manual_seed(0)
 np.random.seed(0)
 
-BS = 6 #16
+BS = 10 #12 #15 #15 #15 #15 #15 #15 #6 #6 #16
 BS_UPSCALE = 1 #4
-INIT_LR = 0.02 * BS_UPSCALE #* 0.1
+INIT_LR = 0.01 * BS_UPSCALE # 0.02 --- 0.001
 X3D_VERSION = 'M'
 CHARADES_MEAN = [0.413, 0.368, 0.338]
 CHARADES_STD = [0.131, 0.125, 0.132] # CALCULATED ON CHARADES TRAINING SET FOR FRAME-WISE MEANS
 CHARADES_TR_SIZE = 7900
 CHARADES_VAL_SIZE = 1850
-CHARADES_ROOT = '/data/add_disk0/kumarak/Charades_v1_rgb'
+CHARADES_ROOT = '/home/kkahatapitiy/data/Charades_v1_rgb'
 CHARADES_ANNO = 'data/charades.json'
-FINE_FEAT_DIR = '/nfs/bigcornea/add_disk0/kumarak/fine_spatial7x7' # pre-extract fine features and save here, to reduce compute req
+FINE_FEAT_DIR = '/home/kkahatapitiy/data/x3d_feat/cm' # originalDGX original bg cm mu # pre-extract fine features and save here, to reduce compute req
 
 
 # 0.00125 * BS_UPSCALE --> 80 epochs warmup 2000
@@ -66,12 +67,12 @@ def run(init_lr=INIT_LR, warmup_steps=0, max_epochs=200, root=CHARADES_ROOT, tra
     resize_size = {'S':[180.,225.], 'M':[256.,320.], 'XL':[360.,450.]}[X3D_VERSION] #[256.,320.]
     gamma_tau = {'S':6, 'M':5*1, 'XL':5}[X3D_VERSION] # 5
 
-    load_steps = st_steps = steps = 0
-    epochs = 0
+    load_steps = st_steps = steps = 16000 #0
+    epochs = 24 #0
     num_steps_per_update = 1 # accum gradient
     cur_iterations = steps * num_steps_per_update
     iterations_per_epoch = CHARADES_TR_SIZE//batch_size
-    val_batch_size = 1 #batch_size//4 # //8 for 10 crop with 4 gpus, //2 otherwise
+    val_batch_size = batch_size#//5*2 # //8 for 10 crop with 4 gpus, //2 otherwise
     val_iterations_per_epoch = CHARADES_VAL_SIZE//val_batch_size
     max_steps = iterations_per_epoch * max_epochs
 
@@ -87,12 +88,12 @@ def run(init_lr=INIT_LR, warmup_steps=0, max_epochs=200, root=CHARADES_ROOT, tra
     dataset = Charades(train_split, 'training', root, fine_feat, feat_keys, train_spatial_transforms,
                                 task='loc', frames=frames, gamma_tau=gamma_tau, crops=1)
     dataloader = torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=True,
-                                num_workers=8, pin_memory=True, collate_fn=collate_fn)
+                                num_workers=16, pin_memory=True, collate_fn=collate_fn)
 
     val_dataset = Charades(train_split, 'testing', root, fine_feat, feat_keys, val_spatial_transforms,
                                 task='loc', frames=frames, gamma_tau=gamma_tau, crops=1)
     val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=val_batch_size, shuffle=False,
-                                num_workers=8, pin_memory=True, collate_fn=collate_fn)
+                                num_workers=16, pin_memory=True, collate_fn=collate_fn)
 
 
     dataloaders = {'train': dataloader, 'val': val_dataloader}
@@ -104,26 +105,81 @@ def run(init_lr=INIT_LR, warmup_steps=0, max_epochs=200, root=CHARADES_ROOT, tra
     # setup the model
     # ON 4 GPUS, 128/4, 32 CLIPS PER GPU, base_bn_splits=4 means BN calculated per 8xlong_cycle_multiplier clips
 
-    coarse_net = x3d_coarse.generate_model(x3d_version=X3D_VERSION, n_classes=400, n_input_channels=3,
+    coarse_net = x3d_coarse.generate_model(x3d_version=X3D_VERSION, n_classes=400+0, n_input_channels=3,
                                     feat_depth=feat_depth, task='loc', dropout=0.5, base_bn_splits=1,
-                                    learnedMixing=True, isMixing=True, t_pool='grid')
-    '''load_ckpt = torch.load('models/x3d_multigrid_kinetics_fb_pretrained.pt')
-    #x3d.load_state_dict(load_ckpt['model_state_dict'])
-    state = x3d.state_dict()
-    state.update(load_ckpt['model_state_dict'])
-    x3d.load_state_dict(state)'''
-
-    save_model = 'models/coarse_fineFEAT_charades_'
-
-    coarse_net.replace_logits(157)
-
-    load_ckpt = torch.load('models/coarse_fineFEAT_charades_019000_SAVE.pt')
+                                    learnedMixing=True, isMixing=True, t_pool='grid') #'grid'
+    #load_ckpt = torch.load('models/x3d_multigrid_kinetics_fb_pretrained.pt')
+    #load_ckpt = torch.load('models/x3d_multigrid_kinetics_rgb_sgd_weakly_fromFB_full_617000.pt')
+    #load_ckpt = torch.load('models/x3d_multigrid_kinetics_rgb_sgd_randReplace_MixUp_x1Adaptive_CrEntropyObj_fromFB_full_610000.pt') # 560000
+    load_ckpt = torch.load('models/x3d_multigrid_kinetics_rgb_sgd_randReplace_CutMixV2_3_x1Adaptive_CrEntropyObj_fromFB_full_600000.pt')
+    #coarse_net.load_state_dict(load_ckpt['model_state_dict'])
     state = coarse_net.state_dict()
     state.update(load_ckpt['model_state_dict'])
     coarse_net.load_state_dict(state)
 
+    '''load_ckpt = torch.load('models/x3d_multigrid_kinetics_fb_pretrained.pt')
+    state_to_load = load_ckpt['model_state_dict']
+    state = coarse_net.state_dict()
+    for k in state_to_load:
+        k_ = k
+        if 'split_bn' in k: continue
+        elif 'bn.' in k: k_ = k.replace('bn.','')
+        if state_to_load[k].shape != state[k_].shape:
+            if 'running_mean' in k or 'running_var' in  k:
+                n = state_to_load[k].shape[0]
+                state[k_] = F.adaptive_avg_pool1d(state_to_load[k].view(1,1,n), n//2*4).view(-1)
+            elif 'fc' in k:
+                state[k_] = state_to_load[k].unsqueeze(-1).unsqueeze(-1).unsqueeze(-1)
+            else:
+                print(k, state_to_load[k].shape, state[k_].shape)
+        else:
+            state[k_] = state_to_load[k]
+    coarse_net.load_state_dict(state)'''
+
+
+    save_model = 'models/coarse_fineFEAT_charades_cm_' #cm+originalFeat
+    #save_model = 'models/coarse_fineFEAT_charades_mu+originalFeat_'
+    #save_model = 'models/coarse_fineFEAT_charades_bg+originalFeat_'
+    #save_model = 'models/coarse_fineFEAT_charades_original+cmFeat_'
+    #save_model = 'models/coarse_fineFEAT_charades_cm+cm2Feat_'
+    #save_model = 'models/temp_'
+
+    coarse_net.replace_logits(157)
+
+    #load_ckpt = torch.load('models/coarse_fineFEAT_charades_019000_SAVE.pt')
+
+    #load_ckpt = torch.load('models/x3d_grid_charades_loc_rgb_sgd_bg_049000.pt')
+    #load_ckpt = torch.load('models/x3d_grid_charades_loc_rgb_sgd_cm_049000.pt')
+    #load_ckpt = torch.load('models/x3d_grid_charades_loc_rgb_sgd_mu_049000.pt')            coarse          fine
+
+    #load_ckpt = torch.load('models/x3d_charades_loc_GRIDPOOL4_rgb_sgd_056000_SAVE.pt')     # mAP: 0.1796   mAP: 0.1774
+
+    #load_ckpt = torch.load('models/x3d_grid_charades_loc_rgb_sgd_bg_049000_DGX.pt')        # mAP: 0.1778   mAP: 0.1879
+    #load_ckpt = torch.load('models/x3d_grid_charades_loc_rgb_sgd_cm_047000_DGX.pt')        # mAP: 0.1885   mAP: 0.1899  -->    0.2283
+    #load_ckpt = torch.load('models/x3d_grid_charades_loc_rgb_sgd_mu_048000_DGX.pt')        # mAP: 0.1897   mAP: 0.1918  -->    0.2312
+
+    #load_ckpt = torch.load('models/x3d_grid_charades_loc_rgb_sgd_original_049000_DGX.pt')  # mAP: 0.1813   mAP: 0.1728  -->    0.2329 -->                      0.2510
+
+    #cm + original_feat     mAP: 0.2357 models/coarse_fineFEAT_charades_cm+originalFeat_016000.pt                               0.2357
+    #mu + original_feat     mAP: 0.2362 models/coarse_fineFEAT_charades_mu+originalFeat_021000.pt                               0.2364
+    #bf + original_feat     mAP: 0.2365 models/coarse_fineFEAT_charades_bg+originalFeat_018000.pt                               0.2364 --> 0.2429 ensemble -->  0.2651
+
+    #original + cm_feat     mAP: 0.2321
+    #cm + mu_feat           mAP: 0.2311
+
+    #load_ckpt = torch.load('models/x3d_charades_loc_rgb_sgd_mu_049000_DGX.pt')
+
+    #load_ckpt = torch.load('models/coarse_fineFEAT_charades_cm_016000.pt')
+    #load_ckpt = torch.load('models/coarse_fineFEAT_charades_mu+originalFeat_021000.pt')
+    #load_ckpt = torch.load('models/coarse_fineFEAT_charades_bg+originalFeat_018000.pt')
+
+
+    '''state = coarse_net.state_dict()
+    state.update(load_ckpt['model_state_dict'])
+    coarse_net.load_state_dict(state)'''
+
     if steps>0:
-        load_ckpt = torch.load('models/coarse_fineFEAT_charades_'+str(load_steps).zfill(6)+'.pt')
+        load_ckpt = torch.load('models/coarse_fineFEAT_charades_cm_'+str(load_steps).zfill(6)+'.pt')
         coarse_net.load_state_dict(load_ckpt['model_state_dict'])
 
     coarse_net.cuda()
@@ -134,32 +190,42 @@ def run(init_lr=INIT_LR, warmup_steps=0, max_epochs=200, root=CHARADES_ROOT, tra
     print ('LR:%f'%lr)
 
 
-    rw_params=[]; base_params=[];
+    '''rw_params=[]; base_params=[];
     for name,para in coarse_net.named_parameters():
         if 'rw' in name or 'mix' in name: rw_params.append(para)
         else: base_params.append(para)
-    optimizer = optim.SGD([{'params': base_params}, {'params': rw_params, 'lr': lr*10}], lr=lr, momentum=0.9, weight_decay=1e-5)
+    #optimizer = optim.SGD([{'params': base_params}, {'params': rw_params, 'lr': lr*10}], lr=lr, momentum=0.9, weight_decay=1e-5) # lr*10
+    optimizer = optim.Adam([{'params': base_params}, {'params': rw_params, 'lr': lr*10}], lr=lr, weight_decay=1e-5)'''
+
+    optimizer = optim.SGD(coarse_net.parameters(), lr=lr, momentum=0.9, weight_decay=1e-5)
+    #optimizer = optim.Adam(coarse_net.parameters(), lr=lr, weight_decay=1e-5)
 
     lr_schedule = [15,25,35]
+    #lr_schedule = [20,30,40]
     lr_sched = optim.lr_scheduler.MultiStepLR(optimizer, lr_schedule, verbose=True)
+    #lr_sched = optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', patience=10, factor=0.1, verbose=True) #2
     if steps>0:
         optimizer.load_state_dict(load_ckpt['optimizer_state_dict'])
-        lr_sched.load_state_dict(load_ckpt['scheduler_state_dict'])
+        #lr_sched.load_state_dict(load_ckpt['scheduler_state_dict'])
+        lr_ckpt = load_ckpt['scheduler_state_dict']
+        lr_ckpt['milestones']=Counter([20,30,40])
+        lr_sched.load_state_dict(lr_ckpt)
+        print(lr_sched.state_dict())
 
     criterion_class = nn.BCELoss(reduction='mean')
     criterion_loc = nn.BCELoss(reduction='sum')
 
     val_apm = APMeter()
     tr_apm = APMeter()
-    write_file = open('localize_corr_v1.csv', 'w', newline='\n')
-    writer = csv.writer(write_file)
+    #write_file = open('localize_corr_v1.csv', 'w', newline='\n')
+    #writer = csv.writer(write_file)
 
     while epochs < max_epochs:
         print ('Step {} Epoch {}'.format(steps, epochs))
         print ('-' * 10)
 
         # Each epoch has a training and validation phase
-        for phase in ['val']:# for training --> 2*['train']+['val']:
+        for phase in 2*['train']+['val']: #['val']:# for training --> 2*['train']+['val']:
             bar_st = iterations_per_epoch if phase == 'train' else val_iterations_per_epoch
             bar = pkbar.Pbar(name='update: ', target=bar_st)
             if phase == 'train':
@@ -212,7 +278,7 @@ def run(init_lr=INIT_LR, warmup_steps=0, max_epochs=200, root=CHARADES_ROOT, tra
                 valid_t = torch.sum(masks, dim=1).int()
 
 
-                t_lim_inference = 1000 # if VAL data too large to fit into memory, split
+                t_lim_inference = 2048 #512 #1000 # if VAL data too large to fit into memory, split
                 if phase == 'train' or inputs.shape[2]<t_lim_inference+5:
                     per_frame_logits = coarse_net([inputs, feat, feat_masks, i, meta]) # B C T
                 else:
@@ -246,7 +312,10 @@ def run(init_lr=INIT_LR, warmup_steps=0, max_epochs=200, root=CHARADES_ROOT, tra
                 else:
                     for b in range(labels.shape[0]):
 
-                        p1 = probs[b][:,:valid_t[b].item()]
+                        val_apm.add(probs[b][:,:valid_t[b].item()].transpose(0,1).detach().cpu().numpy(),
+                                    labels[b][:,:valid_t[b].item()].transpose(0,1).cpu().numpy())
+
+                        '''p1 = probs[b][:,:valid_t[b].item()]
                         l1 = labels[b][:,:valid_t[b].item()]
                         sc = valid_t[b].item()/25. #p1.shape[1]/25.
                         p1 = p1[:,1::int(sc)][:,:25]
@@ -263,18 +332,19 @@ def run(init_lr=INIT_LR, warmup_steps=0, max_epochs=200, root=CHARADES_ROOT, tra
                             writer.writerow([name[0], 1+i*dur[b].item()/25., st])
 
                         val_apm.add(p1.transpose(0,1).detach().cpu().numpy(),
-                                    l1.transpose(0,1).cpu().numpy())
+                                    l1.transpose(0,1).cpu().numpy())'''
 
 
 
-                loss = 1 * (cls_loss + loc_loss)/(2 * num_steps_per_update)
+                #loss = 1 * (cls_loss + loc_loss)/(2 * num_steps_per_update)
+                loss = 1 * loc_loss/num_steps_per_update
                 tot_loss += loss.item() #data[0]
 
                 if phase == 'train':
                     loss.backward()
 
                 if num_iter == num_steps_per_update and phase == 'train':
-                    lr_warmup(lr, steps-st_steps, warmup_steps, optimizer) # steps init_lr, USE ONLY AT THE START
+                    #lr_warmup(lr, steps-st_steps, warmup_steps, optimizer) # steps init_lr, USE ONLY AT THE START
                     steps += 1
                     num_iter = 0
                     optimizer.step()
@@ -292,13 +362,14 @@ def run(init_lr=INIT_LR, warmup_steps=0, max_epochs=200, root=CHARADES_ROOT, tra
                                 'scheduler_state_dict': lr_sched.state_dict()}
                         torch.save(ckpt, save_model+str(steps).zfill(6)+'.pt')
             if phase == 'val':
-                write_file.close()
+                #write_file.close()
                 val_map = val_apm.value().mean()
                 val_apm.reset()
                 print (' Epoch:{} {} Loc Loss: {:.4f} Cls Loss: {:.4f} Tot Loss: {:.4f} mAP: {:.4f}'.format(epochs, phase,
                     tot_loc_loss/num_iter, tot_cls_loss/num_iter, (tot_loss*num_steps_per_update)/num_iter, val_map))#, tot_acc/num_iter))
                 tot_loss = tot_loc_loss = tot_cls_loss = tot_dis_loss = tot_acc = tot_corr = tot_dat = 0.
                 lr_sched.step()
+                #lr_sched.step(tot_loss)
 
 
 def lr_warmup(init_lr, cur_steps, warmup_steps, opt):
