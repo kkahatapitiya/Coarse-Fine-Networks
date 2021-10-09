@@ -2,3 +2,4 @@ data/*.npy
 models/*charades*0.pt
 log*
 __pycache__
+localize_corr_v1*
