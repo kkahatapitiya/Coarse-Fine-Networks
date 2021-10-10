@@ -50,6 +50,10 @@ CHARADES_ANNO = 'data/charades.json'
 FINE_SAVE_DIR = '/nfs/bigcornea/add_disk0/kumarak/fine_spatial7x7'
 # pre-extract fine features and save here, to reduce compute req
 # MAKE DIRS FINE_SAVE_DIR/['layer1', 'layer2', 'layer3', 'layer4', 'conv5']
+feat_keys = ['layer1', 'layer2', 'layer3', 'layer4', 'conv5']
+for k in feat_keys:
+    if not os.path.exists(os.path.join(FINE_SAVE_DIR,k)):
+        os.makedirs(os.path.join(FINE_SAVE_DIR,k))
 
 
 # 0.00125 * BS_UPSCALE --> 80 epochs warmup 2000
@@ -74,13 +78,13 @@ def run(init_lr=INIT_LR, warmup_steps=0, max_epochs=100, root=CHARADES_ROOT,
                                         Normalize(CHARADES_MEAN, CHARADES_STD)])
 
     # SET 'TESTING' FOR BOTH, TO EXTRACT
-    dataset = Charades(train_split, 'testing', root, train_spatial_transforms,
-                                task='loc', frames=frames, gamma_tau=gamma_tau, crops=1)
+    dataset = Charades(train_split, 'testing', root, val_spatial_transforms,
+                                task='loc', frames=frames, gamma_tau=gamma_tau, crops=1, extract_feat=True)
     dataloader = torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=True,
                                 num_workers=8, pin_memory=True, collate_fn=collate_fn)
 
     val_dataset = Charades(train_split, 'testing', root, val_spatial_transforms,
-                                task='loc', frames=frames, gamma_tau=gamma_tau, crops=1)
+                                task='loc', frames=frames, gamma_tau=gamma_tau, crops=1, extract_feat=True)
     val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size, shuffle=False,
                                 num_workers=8, pin_memory=True, collate_fn=collate_fn)
 
@@ -151,7 +155,7 @@ def run(init_lr=INIT_LR, warmup_steps=0, max_epochs=100, root=CHARADES_ROOT,
                 num_iter += 1
                 bar.update(i)
 
-                inputs, labels, masks, meta, name = data
+                inputs, labels, masks, name = data
                 b,n,c,t,h,w = inputs.shape
                 inputs = inputs.view(b*n,c,t,h,w)
 

@@ -107,20 +107,20 @@ def run(init_lr=INIT_LR, warmup_steps=0, max_epochs=200, root=CHARADES_ROOT, tra
     coarse_net = x3d_coarse.generate_model(x3d_version=X3D_VERSION, n_classes=400, n_input_channels=3,
                                     feat_depth=feat_depth, task='loc', dropout=0.5, base_bn_splits=1,
                                     learnedMixing=True, isMixing=True, t_pool='grid')
-    '''load_ckpt = torch.load('models/x3d_multigrid_kinetics_fb_pretrained.pt')
+    load_ckpt = torch.load('models/x3d_multigrid_kinetics_fb_pretrained.pt')
     #x3d.load_state_dict(load_ckpt['model_state_dict'])
-    state = x3d.state_dict()
+    state = coarse_net.state_dict()
     state.update(load_ckpt['model_state_dict'])
-    x3d.load_state_dict(state)'''
+    coarse_net.load_state_dict(state)
 
     save_model = 'models/coarse_fineFEAT_charades_'
 
     coarse_net.replace_logits(157)
 
-    load_ckpt = torch.load('models/coarse_fineFEAT_charades_019000_SAVE.pt')
+    '''load_ckpt = torch.load('models/coarse_fineFEAT_charades_019000_SAVE.pt')
     state = coarse_net.state_dict()
     state.update(load_ckpt['model_state_dict'])
-    coarse_net.load_state_dict(state)
+    coarse_net.load_state_dict(state)'''
 
     if steps>0:
         load_ckpt = torch.load('models/coarse_fineFEAT_charades_'+str(load_steps).zfill(6)+'.pt')
@@ -159,7 +159,7 @@ def run(init_lr=INIT_LR, warmup_steps=0, max_epochs=200, root=CHARADES_ROOT, tra
         print ('-' * 10)
 
         # Each epoch has a training and validation phase
-        for phase in ['val']:# for training --> 2*['train']+['val']:
+        for phase in 2*['train']+['val']: #['val']:# for training --> 2*['train']+['val']:
             bar_st = iterations_per_epoch if phase == 'train' else val_iterations_per_epoch
             bar = pkbar.Pbar(name='update: ', target=bar_st)
             if phase == 'train':
